@@ -3,6 +3,9 @@ package com.nutrivision.controller;
 import com.nutrivision.entity.User;
 import com.nutrivision.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import com.nutrivision.dto.UserRequest;
+import com.nutrivision.dto.UserResponse;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -17,8 +20,17 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponse createUser(@Valid @RequestBody UserRequest request) {
+
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        User savedUser = userService.createUser(user);
+
+        return UserResponse.fromUser(savedUser);
     }
 
     @GetMapping
