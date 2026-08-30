@@ -1,6 +1,7 @@
 package com.nutrivision.service;
 
 import com.nutrivision.entity.User;
+import com.nutrivision.exception.EmailAlreadyExistsException;
 import com.nutrivision.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,12 @@ public class UserService {
     }
 
     public User createUser(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExistsException(
+                    "Email is already registered"
+            );
+        }
 
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
